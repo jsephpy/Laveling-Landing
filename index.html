@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laveling — Agentes de IA para tu negocio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #050810;
+  --bg2:   #090D1A;
+  --bg3:   #0C1220;
+  --blue:  #0A2A5E;
+  --cyan:  #4DB8FF;
+  --cyan2: #00D4FF;
+  --white: #F0F4FF;
+  --gray:  #8896B3;
+  --gray2: #4A5568;
+  --gold:  #F6C90E;
+  --border:rgba(77,184,255,0.12);
+  --font-d:'Syne',sans-serif;
+  --font-b:'DM Sans',sans-serif;
+  --font-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-x:hidden;line-height:1.6}
+
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(77,184,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(77,184,255,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;
+  background:rgba(5,8,16,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:var(--font-d);font-weight:800;font-size:1.2rem;letter-spacing:.05em;color:var(--white);white-space:nowrap}
+.nav-logo span{color:var(--cyan)}
+.nav-links{display:none}
+.nav-cta{
+  font-family:var(--font-m);font-size:.7rem;letter-spacing:.08em;
+  padding:.5rem 1.1rem;border-radius:.4rem;
+  background:var(--cyan);color:var(--bg);border:none;
+  cursor:pointer;font-weight:600;transition:all .2s;
+  text-decoration:none;text-transform:uppercase;white-space:nowrap;flex-shrink:0;
+}
+.nav-cta:hover{background:var(--cyan2);transform:translateY(-1px)}
+
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .nav-links{display:flex;gap:2rem}
+  .nav-links a{font-family:var(--font-m);font-size:.72rem;letter-spacing:.1em;color:var(--gray);text-decoration:none;transition:color .2s;text-transform:uppercase}
+  .nav-links a:hover{color:var(--cyan)}
+  .nav-logo{font-size:1.3rem}
+}
+
+section{position:relative;z-index:1}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:7rem 1.2rem 4rem;
+  text-align:center;overflow:hidden;
+}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.orb1{width:400px;height:400px;background:rgba(0,212,255,.06);top:-150px;left:50%;transform:translateX(-50%)}
+.orb2{width:300px;height:300px;background:rgba(10,42,94,.4);bottom:-80px;right:-80px}
+@media(min-width:768px){
+  .orb1{width:700px;height:700px}
+  .orb2{width:400px;height:400px}
+  #hero{padding:8rem 2rem 5rem}
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--font-m);font-size:.65rem;letter-spacing:.12em;
+  color:var(--cyan);border:1px solid var(--border);
+  padding:.35rem .9rem;border-radius:2rem;margin-bottom:1.5rem;
+  background:rgba(0,212,255,.05);
+  animation:fadeUp .8s ease both;
+}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;flex-shrink:0}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.hero-h1{
+  font-family:var(--font-d);font-weight:800;
+  font-size:clamp(2.2rem,8vw,5.5rem);
+  line-height:1.08;letter-spacing:-.02em;
+  max-width:900px;margin:0 auto 1.2rem;
+  animation:fadeUp .8s .1s ease both;
+  word-break:keep-all;
+}
+.hero-h1 .accent{color:var(--cyan);display:block}
+.hero-h1 .stroke{-webkit-text-stroke:2px var(--cyan);color:transparent;display:block}
+
+.hero-sub{
+  font-size:clamp(.9rem,3vw,1.1rem);color:var(--gray);
+  max-width:520px;margin:0 auto 2rem;line-height:1.7;
+  animation:fadeUp .8s .2s ease both;
+  padding:0 .5rem;
+}
+
+.hero-ctas{
+  display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .8s .3s ease both;
+  padding:0 .5rem;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--font-d);font-weight:700;font-size:.95rem;
+  padding:.85rem 1.8rem;border-radius:.5rem;
+  background:linear-gradient(135deg,var(--cyan2),#0095CC);
+  color:var(--bg);border:none;cursor:pointer;
+  transition:all .25s;text-decoration:none;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,212,255,.35)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--font-m);font-size:.8rem;letter-spacing:.07em;
+  padding:.85rem 1.6rem;border-radius:.5rem;
+  background:transparent;color:var(--gray);
+  border:1px solid var(--border);cursor:pointer;
+  transition:all .25s;text-decoration:none;
+}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan)}
+
+.hero-stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;
+  margin-top:3rem;padding-top:2.5rem;
+  border-top:1px solid var(--border);
+  width:100%;max-width:600px;
+  animation:fadeUp .8s .4s ease both;
+}
+@media(min-width:600px){.hero-stats{grid-template-columns:repeat(4,1fr);gap:2rem}}
+.stat{text-align:center;padding:.5rem}
+.stat-num{font-family:var(--font-d);font-weight:800;font-size:2rem;color:var(--white);display:block;line-height:1}
+.stat-num span{color:var(--cyan)}
+.stat-label{font-size:.72rem;color:var(--gray);margin-top:.3rem;display:block;font-family:var(--font-m);letter-spacing:.06em}
+
+/* ── TICKER ── */
+.ticker-wrap{width:100%;overflow:hidden;padding:1.2rem 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.ticker{display:flex;width:max-content;animation:ticker 20s linear infinite}
+.ticker-item{font-family:var(--font-m);font-size:.72rem;letter-spacing:.15em;color:var(--gray2);padding:0 2rem;white-space:nowrap;text-transform:uppercase}
+.ticker-item span{color:var(--cyan);margin-right:.4rem}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION SHARED ── */
+.section-wrap{max-width:1100px;margin:0 auto;padding:4rem 1.2rem}
+@media(min-width:768px){.section-wrap{padding:6rem 2rem}}
+.section-label{font-family:var(--font-m);font-size:.65rem;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem}
+.section-label::before{content:'';width:1.5rem;height:1px;background:var(--cyan)}
+.section-h2{font-family:var(--font-d);font-weight:800;font-size:clamp(1.8rem,5vw,3.2rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem}
+.section-h2 em{color:var(--cyan);font-style:normal}
+
+/* ── PROBLEMA ── */
+#problema{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.problema-grid{display:grid;grid-template-columns:1fr;gap:2.5rem}
+@media(min-width:900px){.problema-grid{grid-template-columns:1fr 1fr;gap:4rem;align-items:center}}
+.problema-pains{display:flex;flex-direction:column;gap:.8rem;margin-top:1.5rem}
+.pain-item{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.2rem;border-radius:.6rem;background:var(--bg3);border:1px solid var(--border);transition:border-color .2s}
+.pain-item:hover{border-color:rgba(77,184,255,.3)}
+.pain-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.pain-text{font-size:.88rem;color:var(--gray);line-height:1.6}
+.pain-text strong{color:var(--white);display:block;margin-bottom:.15rem;font-size:.95rem}
+.cost-card{background:var(--bg3);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;width:100%}
+.cost-title{font-family:var(--font-m);font-size:.62rem;letter-spacing:.12em;color:var(--cyan);margin-bottom:1.2rem;text-transform:uppercase}
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.cost-row:last-of-type{border-bottom:none}
+.cost-row .label{color:var(--gray)}
+.cost-row .value.red{color:#FF6B6B;font-family:var(--font-m);font-weight:500}
+.cost-total{margin-top:1rem;padding:.9rem;background:rgba(0,212,255,.05);border-radius:.5rem;border:1px solid rgba(0,212,255,.15);text-align:center}
+.cost-total-label{font-family:var(--font-m);font-size:.62rem;letter-spacing:.08em;color:var(--gray);text-transform:uppercase}
+.cost-total-val{font-family:var(--font-d);font-size:1.8rem;font-weight:800;color:var(--cyan);margin-top:.2rem}
+
+/* ── SOLUCIÓN ── */
+#solucion{position:relative;overflow:hidden}
+.solucion-header{text-align:center;max-width:680px;margin:0 auto 3rem}
+.agents-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:600px){.agents-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.agents-grid{grid-template-columns:repeat(3,1fr)}}
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:.8rem;padding:1.5rem;transition:all .3s;position:relative;overflow:hidden}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s}
+.agent-card:hover{border-color:rgba(77,184,255,.3);transform:translateY(-3px)}
+.agent-card:hover::before{opacity:1}
+.agent-icon{font-size:1.8rem;margin-bottom:.8rem}
+.agent-title{font-family:var(--font-d);font-weight:700;font-size:1rem;margin-bottom:.4rem;color:var(--white)}
+.agent-desc{font-size:.85rem;color:var(--gray);line-height:1.6}
+.agent-tag{display:inline-block;margin-top:.8rem;font-family:var(--font-m);font-size:.62rem;letter-spacing:.08em;color:var(--cyan);background:rgba(77,184,255,.08);padding:.18rem .55rem;border-radius:.3rem;border:1px solid rgba(77,184,255,.15);text-transform:uppercase}
+
+/* ── MARKETING ── */
+#marketing{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.marketing-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:2rem}
+@media(min-width:600px){.marketing-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.marketing-grid{grid-template-columns:repeat(4,1fr)}}
+.mkt-card{background:var(--bg3);border:1px solid var(--border);border-radius:.8rem;padding:1.4rem;text-align:center;transition:all .3s}
+.mkt-card:hover{border-color:rgba(77,184,255,.3);transform:translateY(-3px)}
+.mkt-icon{font-size:2rem;margin-bottom:.7rem}
+.mkt-title{font-family:var(--font-d);font-weight:700;font-size:.95rem;color:var(--white);margin-bottom:.4rem}
+.mkt-desc{font-size:.82rem;color:var(--gray);line-height:1.55}
+
+/* ── BENEFICIOS ── */
+#beneficios{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.beneficios-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:2.5rem}
+@media(min-width:600px){.beneficios-grid{grid-template-columns:repeat(2,1fr)}}
+.beneficio-item{display:flex;gap:1rem;padding:1.3rem;background:var(--bg2);border:1px solid var(--border);border-radius:.7rem;transition:border-color .2s}
+.beneficio-item:hover{border-color:rgba(77,184,255,.25)}
+.beneficio-num{font-family:var(--font-d);font-size:2rem;font-weight:800;color:rgba(77,184,255,.15);line-height:1;flex-shrink:0;width:44px}
+.beneficio-title{font-family:var(--font-d);font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.beneficio-desc{font-size:.85rem;color:var(--gray);line-height:1.6}
+
+/* ── PROCESO ── */
+#proceso{}
+.proceso-header{text-align:center;max-width:580px;margin:0 auto 3.5rem}
+.steps{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto}
+.step{display:grid;grid-template-columns:60px 1fr;gap:1.5rem;align-items:flex-start;position:relative;padding-bottom:2rem}
+.step:last-child{padding-bottom:0}
+@media(min-width:600px){.step{grid-template-columns:80px 1fr;gap:2rem}}
+.step-left{display:flex;flex-direction:column;align-items:center}
+.step-num{width:46px;height:46px;border-radius:50%;background:var(--blue);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-weight:800;font-size:.9rem;color:var(--cyan);flex-shrink:0;position:relative;z-index:1}
+.step-line{width:2px;flex:1;background:linear-gradient(to bottom,var(--cyan),transparent);margin-top:.4rem;min-height:35px}
+.step:last-child .step-line{display:none}
+.step-content{padding-top:.4rem;padding-bottom:.8rem}
+.step-title{font-family:var(--font-d);font-weight:700;font-size:1rem;margin-bottom:.4rem}
+.step-desc{font-size:.88rem;color:var(--gray);line-height:1.65}
+.step-tag{display:inline-block;margin-top:.5rem;font-family:var(--font-m);font-size:.62rem;letter-spacing:.08em;color:var(--gold);background:rgba(246,201,14,.08);padding:.18rem .55rem;border-radius:.3rem;border:1px solid rgba(246,201,14,.2)}
+
+/* ── CASOS ── */
+#casos{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.casos-header{text-align:center;max-width:580px;margin:0 auto 3rem}
+.casos-grid{display:grid;grid-template-columns:1fr;gap:1.2rem}
+@media(min-width:600px){.casos-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.casos-grid{grid-template-columns:repeat(3,1fr)}}
+.caso-card{background:var(--bg3);border:1px solid var(--border);border-radius:.8rem;padding:1.6rem;position:relative;overflow:hidden}
+.caso-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--blue))}
+.caso-industry{font-family:var(--font-m);font-size:.62rem;letter-spacing:.12em;color:var(--cyan);text-transform:uppercase;margin-bottom:.9rem}
+.caso-result{font-family:var(--font-d);font-size:2rem;font-weight:800;color:var(--white);line-height:1;margin-bottom:.3rem}
+.caso-result span{color:var(--cyan)}
+.caso-metric{font-size:.82rem;color:var(--gray);margin-bottom:1rem}
+.caso-quote{font-size:.85rem;color:var(--gray);line-height:1.6;font-style:italic;padding-top:.9rem;border-top:1px solid var(--border)}
+.caso-author{font-size:.8rem;color:var(--white);margin-top:.4rem;font-style:normal;font-weight:600}
+
+/* ── FAQ ── */
+#faq{}
+.faq-header{text-align:center;max-width:580px;margin:0 auto 2.5rem}
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:.5rem}
+.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:.6rem;overflow:hidden}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--font-d);font-weight:600;font-size:.95rem;transition:color .2s;gap:.8rem}
+.faq-q:hover{color:var(--cyan)}
+.faq-icon{font-size:1.1rem;color:var(--cyan);transition:transform .3s;flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;font-size:.88rem;color:var(--gray);line-height:1.7}
+.faq-a.open{max-height:200px;padding:0 1.3rem 1.1rem}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+
+/* ── CALENDLY / CTA ── */
+#agendar{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bg) 0%,#040A18 50%,#071535 100%)}
+#agendar::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,.06) 0%,transparent 70%);pointer-events:none}
+.agendar-inner{display:grid;grid-template-columns:1fr;gap:3rem}
+@media(min-width:900px){.agendar-inner{grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start}}
+.agendar-desc{font-size:.95rem;color:var(--gray);line-height:1.7;margin-bottom:1.8rem}
+.garantias{display:flex;flex-direction:column;gap:.7rem}
+.garantia{display:flex;align-items:center;gap:.7rem;font-size:.88rem;color:var(--gray2)}
+.garantia-icon{color:var(--cyan);font-size:1rem;flex-shrink:0}
+.calendly-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:1rem;overflow:hidden}
+.calendly-header{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.calendly-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;flex-shrink:0}
+.calendly-title{font-family:var(--font-d);font-weight:700;font-size:.9rem}
+.calendly-sub{font-family:var(--font-m);font-size:.65rem;color:var(--gray);margin-left:auto}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:2.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.2rem}
+.footer-logo{font-family:var(--font-d);font-weight:800;font-size:1.1rem}
+.footer-logo span{color:var(--cyan)}
+.footer-copy{font-family:var(--font-m);font-size:.65rem;color:var(--gray2);letter-spacing:.06em}
+.footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-links a{font-family:var(--font-m);font-size:.65rem;color:var(--gray2);text-decoration:none;letter-spacing:.06em;transition:color .2s}
+.footer-links a:hover{color:var(--cyan)}
+
+/* ── FLOATING CTA ── */
+.float-cta{
+  position:fixed;bottom:1.5rem;right:1.2rem;z-index:99;
+  display:flex;align-items:center;gap:.5rem;
+  font-family:var(--font-d);font-weight:700;font-size:.85rem;
+  padding:.7rem 1.3rem;border-radius:3rem;
+  background:linear-gradient(135deg,var(--cyan2),#0095CC);
+  color:var(--bg);border:none;cursor:pointer;
+  box-shadow:0 6px 25px rgba(0,212,255,.4);
+  transition:all .25s;text-decoration:none;
+  animation:fadeIn 1s 1s ease both;
+}
+.float-cta:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 35px rgba(0,212,255,.5)}
+.float-pulse{width:7px;height:7px;border-radius:50%;background:var(--bg);animation:pulse 1.5s infinite}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LAVELING<span>.</span></div>
+  <div class="nav-links">
+    <a href="#solucion">Servicios</a>
+    <a href="#proceso">Proceso</a>
+    <a href="#casos">Casos</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="#agendar" class="nav-cta">Agenda tu llamada →</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+
+  <div class="hero-badge">JOSEPH PAYE · GROWTH PARTNER · AGENTES DE IA</div>
+
+  <h1 class="hero-h1">
+    Implemento agentes de IA
+    <span class="accent">que automatizan tu negocio</span>
+    <span class="stroke">mientras duermes.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Sin contratar más empleados. Sin procesos manuales. Sin perder tiempo en tareas repetitivas. Solo resultados medibles desde la primera semana.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#agendar" class="btn-primary">📅 Agenda una llamada gratis</a>
+    <a href="#solucion" class="btn-secondary">Ver cómo funciona →</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">70<span>%</span></span>
+      <span class="stat-label">Reducción tareas manuales</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">7<span>d</span></span>
+      <span class="stat-label">Primer agente operativo</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">3<span>x</span></span>
+      <span class="stat-label">ROI promedio en 90 días</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100<span>%</span></span>
+      <span class="stat-label">Remoto y en español</span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item"><span>✦</span>N8N Automation</span>
+    <span class="ticker-item"><span>✦</span>Claude API</span>
+    <span class="ticker-item"><span>✦</span>WhatsApp Bots</span>
+    <span class="ticker-item"><span>✦</span>Facebook Ads</span>
+    <span class="ticker-item"><span>✦</span>Google Ads</span>
+    <span class="ticker-item"><span>✦</span>CRM Automation</span>
+    <span class="ticker-item"><span>✦</span>Email Marketing AI</span>
+    <span class="ticker-item"><span>✦</span>Lead Generation</span>
+    <span class="ticker-item"><span>✦</span>Shopify Automation</span>
+    <span class="ticker-item"><span>✦</span>Content AI</span>
+    <span class="ticker-item"><span>✦</span>N8N Automation</span>
+    <span class="ticker-item"><span>✦</span>Claude API</span>
+    <span class="ticker-item"><span>✦</span>WhatsApp Bots</span>
+    <span class="ticker-item"><span>✦</span>Facebook Ads</span>
+    <span class="ticker-item"><span>✦</span>Google Ads</span>
+    <span class="ticker-item"><span>✦</span>CRM Automation</span>
+    <span class="ticker-item"><span>✦</span>Email Marketing AI</span>
+    <span class="ticker-item"><span>✦</span>Lead Generation</span>
+    <span class="ticker-item"><span>✦</span>Shopify Automation</span>
+    <span class="ticker-item"><span>✦</span>Content AI</span>
+  </div>
+</div>
+
+<!-- ══ PROBLEMA ══ -->
+<section id="problema">
+  <div class="section-wrap">
+    <div class="problema-grid">
+      <div>
+        <div class="section-label">El problema</div>
+        <h2 class="section-h2">Tu negocio está <em>perdiendo dinero</em> en tareas que una IA puede hacer</h2>
+        <p style="color:var(--gray);margin-bottom:1.5rem;line-height:1.7;font-size:.95rem">Cada hora que tú o tu equipo dedican a tareas repetitivas es una hora que no genera ingresos. Mientras tanto, tus competidores ya están automatizando.</p>
+        <div class="problema-pains">
+          <div class="pain-item">
+            <div class="pain-icon">⏰</div>
+            <div class="pain-text"><strong>Tiempo perdido en seguimientos manuales</strong>Responder WhatsApps, emails, cotizaciones — horas que podrían estar vendiendo.</div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">📋</div>
+            <div class="pain-text"><strong>Procesos duplicados y errores humanos</strong>Copiar datos entre sistemas, reportes manuales, tareas que se repiten cada día.</div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">💸</div>
+            <div class="pain-text"><strong>Costo de personal para tareas repetitivas</strong>Pagar salarios para procesos que un agente de IA puede hacer en segundos.</div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">😓</div>
+            <div class="pain-text"><strong>No sabes por dónde empezar con la IA</strong>Las herramientas existen, pero implementarlas requiere tiempo y conocimiento técnico.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cost-card">
+          <div class="cost-title">💸 Lo que te cuesta NO automatizar</div>
+          <div class="cost-row"><span class="label">Seguimiento manual de leads</span><span class="value red">-15h/sem</span></div>
+          <div class="cost-row"><span class="label">Reportes y datos manuales</span><span class="value red">-8h/sem</span></div>
+          <div class="cost-row"><span class="label">Atención al cliente repetitiva</span><span class="value red">-20h/sem</span></div>
+          <div class="cost-row"><span class="label">Publicación de contenido</span><span class="value red">-6h/sem</span></div>
+          <div class="cost-row"><span class="label">Facturación y administración</span><span class="value red">-5h/sem</span></div>
+          <div class="cost-total">
+            <div class="cost-total-label">Total horas perdidas por semana</div>
+            <div class="cost-total-val">54h perdidas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOLUCIÓN — AGENTES IA ══ -->
+<section id="solucion">
+  <div class="section-wrap">
+    <div class="solucion-header">
+      <div class="section-label" style="justify-content:center">Agentes de IA</div>
+      <h2 class="section-h2">Agentes que trabajan <em>24/7</em> por tu negocio</h2>
+      <p style="color:var(--gray);margin-top:.7rem;font-size:.95rem">Implemento agentes personalizados con N8N y Claude API integrados a tus herramientas actuales. Sin código. Sin complicaciones. Operativos en 7 días.</p>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-icon">🤖</div>
+        <div class="agent-title">Agente de Captación de Leads</div>
+        <div class="agent-desc">Captura, califica y hace seguimiento automático de prospectos. Responde consultas, agenda citas y actualiza tu CRM sin intervención humana.</div>
+        <div class="agent-tag">N8N + CRM</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">💬</div>
+        <div class="agent-title">Chatbot Inteligente WhatsApp</div>
+        <div class="agent-desc">Responde a tus clientes 24/7 con inteligencia real. Entiende preguntas complejas, da cotizaciones y escala a humano solo cuando es necesario.</div>
+        <div class="agent-tag">WhatsApp API</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">📊</div>
+        <div class="agent-title">Agente de Reportes Automáticos</div>
+        <div class="agent-desc">Genera dashboards y análisis de KPIs automáticamente. Recibe un resumen diario en tu email o WhatsApp cada mañana.</div>
+        <div class="agent-tag">Sheets + AI</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">📧</div>
+        <div class="agent-title">Agente de Email Marketing</div>
+        <div class="agent-desc">Secuencias de emails personalizadas que se activan por comportamiento. Bienvenida, seguimiento, recuperación y upsell — todo automático.</div>
+        <div class="agent-tag">Klaviyo + AI</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">🎬</div>
+        <div class="agent-title">Agente de Contenido IA</div>
+        <div class="agent-desc">Genera y publica contenido para TikTok, Instagram, YouTube y Facebook. Scripts con IA, voz generada y publicación programada automáticamente.</div>
+        <div class="agent-tag">Blotato + ElevenLabs</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">🔗</div>
+        <div class="agent-title">Integraciones Personalizadas</div>
+        <div class="agent-desc">Conectamos todas tus herramientas actuales: Shopify, Google Sheets, Gmail, Calendar, Notion, Slack y más. Todo fluyendo automáticamente.</div>
+        <div class="agent-tag">API Custom</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MARKETING DIGITAL ══ -->
+<section id="marketing">
+  <div class="section-wrap">
+    <div class="section-label">Marketing digital</div>
+    <h2 class="section-h2">También hago <em>publicidad digital</em> que convierte</h2>
+    <p style="color:var(--gray);font-size:.95rem;max-width:600px;line-height:1.7;margin-bottom:.5rem">Además de los agentes de IA, gestiono campañas de publicidad pagada para que tu negocio llegue a más clientes y genere ventas predecibles cada mes.</p>
+    <div class="marketing-grid">
+      <div class="mkt-card">
+        <div class="mkt-icon">📘</div>
+        <div class="mkt-title">Facebook Ads</div>
+        <div class="mkt-desc">Campañas en Facebook e Instagram segmentadas a tu cliente ideal. Anuncios que convierten desde el primer día.</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-icon">🔍</div>
+        <div class="mkt-title">Google Ads</div>
+        <div class="mkt-desc">Aparece en los primeros resultados cuando tu cliente busca lo que vendes. Pagos solo por clics reales.</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-icon">🎯</div>
+        <div class="mkt-title">Retargeting</div>
+        <div class="mkt-desc">Recupera a los visitantes que no compraron. Campañas de seguimiento automático con IA para cerrar más ventas.</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-icon">📈</div>
+        <div class="mkt-title">Reportes de resultados</div>
+        <div class="mkt-desc">Reportes mensuales con métricas reales: inversión, alcance, clics, conversiones y ROAS. Sin letra pequeña.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BENEFICIOS ══ -->
+<section id="beneficios">
+  <div class="section-wrap">
+    <div class="section-label">Por qué Laveling</div>
+    <h2 class="section-h2">Lo que obtienes cuando <em>trabajas</em> con nosotros</h2>
+    <div class="beneficios-grid">
+      <div class="beneficio-item">
+        <div class="beneficio-num">01</div>
+        <div>
+          <div class="beneficio-title">⚡ Operativo en 7 días</div>
+          <div class="beneficio-desc">Tu primer agente funciona en producción en menos de una semana. Sin esperas, sin burocracia, sin interrumpir tu operación.</div>
+        </div>
+      </div>
+      <div class="beneficio-item">
+        <div class="beneficio-num">02</div>
+        <div>
+          <div class="beneficio-title">💰 Retorno medible desde el mes 1</div>
+          <div class="beneficio-desc">Cada agente tiene KPIs claros: tiempo ahorrado, leads generados, ventas cerradas. Ves el ROI en números reales.</div>
+        </div>
+      </div>
+      <div class="beneficio-item">
+        <div class="beneficio-num">03</div>
+        <div>
+          <div class="beneficio-title">🔧 Sin técnicos, sin código</div>
+          <div class="beneficio-desc">Me encargo de toda la implementación. Tú solo describes qué quieres automatizar y yo lo construyo e instalo.</div>
+        </div>
+      </div>
+      <div class="beneficio-item">
+        <div class="beneficio-num">04</div>
+        <div>
+          <div class="beneficio-title">🌎 Soporte en español, 100% remoto</div>
+          <div class="beneficio-desc">Sin barreras de idioma. Todo en español, con contexto latinoamericano y disponibilidad real desde Bolivia.</div>
+        </div>
+      </div>
+      <div class="beneficio-item">
+        <div class="beneficio-num">05</div>
+        <div>
+          <div class="beneficio-title">📈 Escalable sin límite</div>
+          <div class="beneficio-desc">Empezamos con 1 agente y escalamos según tu crecimiento. La IA no se cansa y puede manejar miles de tareas simultáneas.</div>
+        </div>
+      </div>
+      <div class="beneficio-item">
+        <div class="beneficio-num">06</div>
+        <div>
+          <div class="beneficio-title">🏛️ Asesoría LLC USA incluida</div>
+          <div class="beneficio-desc">También te asesoro para abrir tu LLC en Wyoming y cobrar en USD internacionalmente. Laveling es tu Growth Partner completo.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROCESO ══ -->
+<section id="proceso">
+  <div class="section-wrap">
+    <div class="proceso-header">
+      <div class="section-label" style="justify-content:center">El proceso</div>
+      <h2 class="section-h2">De 0 a automatizado <em>en 4 pasos</em></h2>
+      <p style="color:var(--gray);margin-top:.7rem;font-size:.92rem">Sin reuniones interminables. Sin propuestas que tardan semanas. Empezamos rápido y mostramos resultados reales.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num">01</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Llamada de diagnóstico gratuita (30 min)</div>
+          <div class="step-desc">Analizamos tu negocio, identificamos los procesos que más tiempo te roban y definimos qué agente tendría mayor impacto. Por Google Meet, sin compromiso.</div>
+          <div class="step-tag">📅 Agenda aquí mismo · Google Meet</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">02</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Propuesta personalizada con KPIs claros</div>
+          <div class="step-desc">En 24 horas recibes una propuesta con el agente recomendado, el costo mensual, el tiempo de implementación y los resultados esperados medibles.</div>
+          <div class="step-tag">⏱️ 24h de respuesta</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">03</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Implementación y testing (7 días)</div>
+          <div class="step-desc">Construyo el agente, lo integro con tus herramientas, lo pruebo exhaustivamente y te lo entrego completamente operativo. Sin interrumpir tu operación diaria.</div>
+          <div class="step-tag">🔧 Entrega en 7 días</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">04</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Reporte mensual + optimización continua</div>
+          <div class="step-desc">Cada mes recibes un reporte de KPIs con resultados reales del agente: tiempo ahorrado, tareas completadas, leads generados. Optimizamos según los datos.</div>
+          <div class="step-tag">📊 Resultados reales</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CASOS ══ -->
+<section id="casos">
+  <div class="section-wrap">
+    <div class="casos-header">
+      <div class="section-label" style="justify-content:center">Resultados reales</div>
+      <h2 class="section-h2">Negocios que ya <em>automatizaron</em> con Laveling</h2>
+    </div>
+    <div class="casos-grid">
+      <div class="caso-card">
+        <div class="caso-industry">🍽️ Restaurant Doña Remedios</div>
+        <div class="caso-result">-<span>68</span>%</div>
+        <div class="caso-metric">Reducción en tiempo de atención y reservas manuales</div>
+        <div class="caso-quote">
+          "Antes perdíamos reservas por no responder a tiempo. Ahora el agente confirma, recuerda y gestiona cambios solo. Nuestro equipo se enfoca en el servicio."
+          <div class="caso-author">— Andrew P., Propietario</div>
+        </div>
+      </div>
+      <div class="caso-card">
+        <div class="caso-industry">🍗 Parador Chicken</div>
+        <div class="caso-result"><span>+52</span>%</div>
+        <div class="caso-metric">Aumento en pedidos gestionados sin intervención manual</div>
+        <div class="caso-quote">
+          "Automatizamos los pedidos por WhatsApp y la confirmación de entregas. El agente trabaja 24/7 y nunca pierde un pedido. Ha sido un cambio total."
+          <div class="caso-author">— Jaime Ordóñez, Propietario</div>
+        </div>
+      </div>
+      <div class="caso-card">
+        <div class="caso-industry">🦷 Clínica Dental Bolivia</div>
+        <div class="caso-result"><span>+44</span>%</div>
+        <div class="caso-metric">Aumento en citas confirmadas al mes</div>
+        <div class="caso-quote">
+          "El agente agenda, recuerda y confirma citas automáticamente. Eliminamos las no-shows en un 60% y llenamos la agenda sin esfuerzo adicional."
+          <div class="caso-author">— Marisol Pérez, Directora</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq">
+  <div class="section-wrap">
+    <div class="faq-header">
+      <div class="section-label" style="justify-content:center">FAQ</div>
+      <h2 class="section-h2">Preguntas <em>frecuentes</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿Necesito saber de tecnología o programación?<span class="faq-icon">+</span></div>
+        <div class="faq-a">No. Me encargo de toda la parte técnica. Tú solo describes qué proceso quieres automatizar y yo lo construyo, instalo y te enseño a monitorearlo. Cero conocimiento técnico requerido.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta implementar un agente?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Los retainers mensuales comienzan desde $300 USD/mes para el primer agente. Incluye implementación, mantenimiento y reporte mensual. El costo exacto depende de la complejidad. Lo definimos en la llamada gratuita.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿Con qué herramientas se integran los agentes?<span class="faq-icon">+</span></div>
+        <div class="faq-a">N8N se integra con más de 400 aplicaciones: WhatsApp Business, Gmail, Google Sheets, Shopify, Notion, Slack, HubSpot, Airtable, Calendly y muchas más. Si la usas, probablemente podemos automatizarla.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿En cuánto tiempo está listo el agente?<span class="faq-icon">+</span></div>
+        <div class="faq-a">El primer agente está operativo en 7 días desde que aprobamos la propuesta. Para flujos más complejos con múltiples integraciones puede tomar hasta 14 días hábiles.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si el agente falla o necesita ajustes?<span class="faq-icon">+</span></div>
+        <div class="faq-a">El mantenimiento y soporte están incluidos en el retainer mensual. Si algo falla, lo resuelvo en menos de 24 horas. Además, cada mes optimizamos el agente según los datos reales de uso.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">¿La llamada de diagnóstico es realmente gratuita?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Sí, 100% gratuita y sin compromiso. En 30 minutos por Google Meet analizamos tu negocio y te doy un plan de acción concreto. Si al final no quieres contratar nada, igual te vas con valor real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AGENDAR / CALENDLY ══ -->
+<section id="agendar">
+  <div class="section-wrap">
+    <div class="agendar-inner">
+      <div>
+        <div class="section-label">Agenda tu llamada</div>
+        <h2 class="section-h2">Reserva tu<br><em>llamada gratis</em><br>de 30 minutos</h2>
+        <p class="agendar-desc">En 30 minutos por Google Meet analizamos tu negocio, identificamos qué automatizar primero y te doy un plan de acción concreto — sin compromiso y sin costo.</p>
+        <div class="garantias">
+          <div class="garantia"><span class="garantia-icon">✓</span>Sin costo. Sin compromiso. 100% de valor.</div>
+          <div class="garantia"><span class="garantia-icon">✓</span>Videollamada por Google Meet.</div>
+          <div class="garantia"><span class="garantia-icon">✓</span>Diagnóstico personalizado de tu negocio.</div>
+          <div class="garantia"><span class="garantia-icon">✓</span>Plan de automatización listo en 24h.</div>
+          <div class="garantia"><span class="garantia-icon">✓</span>Joseph Paye — Founder & CEO de Laveling.</div>
+          <div class="garantia"><span class="garantia-icon">✓</span>Respuesta garantizada en menos de 2 horas.</div>
+        </div>
+        <div style="margin-top:2rem;padding:1.3rem;background:var(--bg2);border:1px solid var(--border);border-radius:.8rem">
+          <div style="font-family:var(--font-m);font-size:.62rem;letter-spacing:.1em;color:var(--cyan);margin-bottom:.7rem;text-transform:uppercase">También puedes escribirnos directo</div>
+          <a href="mailto:jsephpy@proton.me" style="display:block;color:var(--white);text-decoration:none;font-size:.95rem;margin-bottom:.3rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">📧 jsephpy@proton.me</a>
+          <div style="font-size:.82rem;color:var(--gray)">Respondemos en menos de 2 horas · GMT-4 Bolivia</div>
+        </div>
+      </div>
+      <div>
+        <div class="calendly-wrap">
+          <div class="calendly-header">
+            <div class="calendly-dot"></div>
+            <div class="calendly-title">Agenda tu llamada gratuita</div>
+            <div class="calendly-sub">30 min · Google Meet</div>
+          </div>
+          <iframe
+            src="https://calendly.com/joseph-calvert72/30min"
+            style="width:100%;min-width:280px;height:620px;border:none;display:block"
+            frameborder="0">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">LAVELING<span>.</span></div>
+  <div class="footer-copy">© 2025 Laveling Corp LLC · Wyoming, USA</div>
+  <div class="footer-links">
+    <a href="mailto:jsephpy@proton.me">Contacto</a>
+    <a href="#agendar">Agendar</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</footer>
+
+<!-- FLOATING CTA -->
+<a href="#agendar" class="float-cta">
+  <div class="float-pulse"></div>
+  📅 Agenda gratis
+</a>
+
+<script>
+function toggleFaq(el){
+  const item=el.parentElement;
+  const ans=item.querySelector('.faq-a');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>{i.classList.remove('open');i.querySelector('.faq-a').classList.remove('open')});
+  if(!isOpen){item.classList.add('open');ans.classList.add('open')}
+}
+
+const obs=new IntersectionObserver(e=>{
+  e.forEach(x=>{
+    const fc=document.querySelector('.float-cta');
+    fc.style.opacity=x.isIntersecting?'0':'1';
+    fc.style.pointerEvents=x.isIntersecting?'none':'auto';
+  });
+},{threshold:0.3});
+obs.observe(document.getElementById('agendar'));
+
+const cards=document.querySelectorAll('.agent-card,.beneficio-item,.caso-card,.step,.pain-item,.mkt-card');
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+      ro.unobserve(e.target);
+    }
+  });
+},{threshold:0.1});
+cards.forEach(el=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(18px)';
+  el.style.transition='opacity .55s ease, transform .55s ease';
+  ro.observe(el);
+});
+</script>
+</body>
+</html>
